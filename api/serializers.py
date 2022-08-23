@@ -8,8 +8,8 @@ class SignUpSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = Profile
-        fields = ['username', 'password', 'confirm_password', 'email', 'conf_code']
+        model = User
+        fields = ['username', 'password', 'confirm_password', 'email']
         extra_kwargs = {
             'password' : {'write_only' : True}
         }
@@ -23,18 +23,21 @@ class SignUpSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Праоли не совпадают'
             )
-        user = Profile(username=username, email=email)
+        user = User(username=username, email=email, is_active=False)
         user.set_password(password)
         user.save()
         return user
 
-class ConfirmEmailSerializer(serializers.ModelSerializer):
+'''class ConfirmEmailSerializer(serializers.ModelSerializer):
 
-    confirm_code = serializers.IntegerField()
+    confirm_code = serializers.IntegerField(read_only=True)
     
     class Meta:
         model = Profile
-        fields = ['conf_code', 'is_active']
+        fields = ['conf_code', 'activate', 'confirm_code']
+        extra_kwargs = {
+            'conf_code' : {'read_only' : True}
+        }
 
     def update(self, instance, validated_data):
 
@@ -44,10 +47,15 @@ class ConfirmEmailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Код введён не полностью'
             )
-        if instance.conf_code != self.confirm_code:
+        if instance.conf_code != confirm_code:
             raise serializers.ValidationError(
                 'Введён неверный код подтверждения'
             )
-        instance.is_active = True
+        instance.activate = True
         instance.save()
         return instance
+
+class ConfirmMailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email')'''

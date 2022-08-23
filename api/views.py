@@ -22,9 +22,6 @@ class ConfirmEmailView(generics.GenericAPIView):
     serializer_class = ConfirmEmailSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request):
-         send_mail('Код подтверждения', f'здравствуйте {request.user.username}, ваш код потверждения - {request.user.profile.conf_code}', [request.user.email])
-
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -32,3 +29,14 @@ class ConfirmEmailView(generics.GenericAPIView):
         return Response({
             'message' : 'Email успешно подтверждён'
         })
+
+'''class SendConfirmMailView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ConfirmMailSerializer
+
+    def get(self, request):
+        email = request.user.email
+        send_mail('Код подтверждения', f'здравствуйте {request.user.username}, ваш код потверждения - {request.user.profile.conf_code}','', [email])
+        return Response({
+            'message' : 'Код подтверждения отправлен'
+         })'''

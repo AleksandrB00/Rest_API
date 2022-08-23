@@ -48,21 +48,3 @@ class TransactionModel(models.Model):
     def __str__(self) -> str:
         return self.transaction_id
 
-class Profile(models.Model):
-
-    def get_conf_code():
-        code = random.randint(100000, 900000)
-        return code
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=False)
-    conf_code = models.IntegerField(default=get_conf_code)
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            Profile.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.profile.save()
